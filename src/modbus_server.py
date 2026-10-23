@@ -14,12 +14,15 @@ from wind_farm import WindFarm
 # One wind farm, three turbine objects
 farm = WindFarm()
 
+
+
 # Store each turbine's Modbus device context
 devices = {}
 
 for device_id in range(1, 4):
     devices[device_id] = ModbusDeviceContext(
-        ir=ModbusSequentialDataBlock(1, [0] * 10)
+        ir=ModbusSequentialDataBlock(1, [0] * 10),
+        hr=ModbusSequentialDataBlock(1,[2000] * 10)
     )
 
 context = ModbusServerContext(
@@ -44,9 +47,10 @@ def update_registers():
                 1 if turbine["status"] == "Running" else 0,
             ]
 
+            turbine_object = farm.turbines[device_id - 1]
             # Function code 4 = input registers
             context[device_id].setValues(
-                4, 0, registers
+                3, 0, [int(turbine_object.power_limit_kw)]
             )
 
             print(

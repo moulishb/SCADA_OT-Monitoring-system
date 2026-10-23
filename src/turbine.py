@@ -5,6 +5,32 @@ class WindTurbine:
     turbine_id: str
     rated_power_kw: float = 2000.0
     power_limit_kw: float = 2000.0
+    
+    def set_power_limit(self, new_limit_kw: float) -> dict:
+        """Validate and update this turbine's power limit."""
+
+        if not isinstance(new_limit_kw, (int, float)):
+            raise ValueError("Power limit must be numeric")
+
+        import math
+        if not math.isfinite(new_limit_kw):
+            raise ValueError("Power limit must be finite")
+
+        if not 0 <= new_limit_kw <= self.rated_power_kw:
+            raise ValueError(
+                f"Power limit must be between "
+                f"0 and {self.rated_power_kw} kW"
+            )
+
+        old_limit = self.power_limit_kw
+        self.power_limit_kw = float(new_limit_kw)
+
+        return {
+            "turbine_id": self.turbine_id,
+            "old_limit_kw": old_limit,
+            "new_limit_kw": self.power_limit_kw,
+            "result": "UPDATED"
+        }
 
     def update(self, wind_speed: float) -> dict:
         cut_in = 3.0
