@@ -1,0 +1,145 @@
+{
+  "first_observed": "2026-10-28T12:54:08.785981+00:00",
+  "last_observed": "2026-10-28T12:54:08.848725+00:00",
+  "event_count": 5,
+  "invalid_records": 0,
+  "suspicious_requests": 5,
+  "results": {
+    "REJECTED": 5
+  },
+  "turbines": {
+    "WT-02": 5
+  },
+  "sources": {
+    "127.0.0.1": 5
+  },
+  "verified_actors": [],
+  "configuration_changes": [],
+  "operational_impact": "No accepted configuration change observed; operational impact unverified",
+  "timeline": [
+    {
+      "timestamp": "2026-10-28T12:54:08.785981+00:00",
+      "event_id": "a1f9c22d-f92e-433e-8480-05685ea726e7",
+      "event_type": "OT_COMMAND",
+      "action": "SET_POWER_LIMIT",
+      "result": "REJECTED",
+      "reason_code": "AUTH_FAILED",
+      "severity": "high",
+      "source_ip": "127.0.0.1",
+      "turbine_id": "WT-02",
+      "requested_limit_kw": 1500,
+      "actor": null,
+      "old_limit_kw": null,
+      "new_limit_kw": null,
+      "correlation_key": "[\"127.0.0.1\",\"WT-02\"]",
+      "wazuh_rule_ids": []
+    },
+    {
+      "timestamp": "2026-10-28T12:54:08.801461+00:00",
+      "event_id": "8b146984-f31c-4e87-b95b-51a9a4977717",
+      "event_type": "OT_COMMAND",
+      "action": "SET_POWER_LIMIT",
+      "result": "REJECTED",
+      "reason_code": "AUTH_FAILED",
+      "severity": "high",
+      "source_ip": "127.0.0.1",
+      "turbine_id": "WT-02",
+      "requested_limit_kw": 1500,
+      "actor": null,
+      "old_limit_kw": null,
+      "new_limit_kw": null,
+      "correlation_key": "[\"127.0.0.1\",\"WT-02\"]",
+      "wazuh_rule_ids": []
+    },
+    {
+      "timestamp": "2026-10-28T12:54:08.816950+00:00",
+      "event_id": "19264bb3-a993-4793-80bb-f6970e3a20c6",
+      "event_type": "OT_COMMAND",
+      "action": "SET_POWER_LIMIT",
+      "result": "REJECTED",
+      "reason_code": "AUTH_FAILED",
+      "severity": "high",
+      "source_ip": "127.0.0.1",
+      "turbine_id": "WT-02",
+      "requested_limit_kw": 1500,
+      "actor": null,
+      "old_limit_kw": null,
+      "new_limit_kw": null,
+      "correlation_key": "[\"127.0.0.1\",\"WT-02\"]",
+      "wazuh_rule_ids": []
+    },
+    {
+      "timestamp": "2026-10-28T12:54:08.832625+00:00",
+      "event_id": "e895b763-4032-43bc-9110-0d14c3641a1a",
+      "event_type": "OT_COMMAND",
+      "action": "SET_POWER_LIMIT",
+      "result": "REJECTED",
+      "reason_code": "AUTH_FAILED",
+      "severity": "high",
+      "source_ip": "127.0.0.1",
+      "turbine_id": "WT-02",
+      "requested_limit_kw": 1500,
+      "actor": null,
+      "old_limit_kw": null,
+      "new_limit_kw": null,
+      "correlation_key": "[\"127.0.0.1\",\"WT-02\"]",
+      "wazuh_rule_ids": []
+    },
+    {
+      "timestamp": "2026-10-28T12:54:08.848725+00:00",
+      "event_id": "56687c13-b23c-431c-909a-99b9cf6cb0d6",
+      "event_type": "OT_COMMAND",
+      "action": "SET_POWER_LIMIT",
+      "result": "REJECTED",
+      "reason_code": "AUTH_FAILED",
+      "severity": "high",
+      "source_ip": "127.0.0.1",
+      "turbine_id": "WT-02",
+      "requested_limit_kw": 1500,
+      "actor": null,
+      "old_limit_kw": null,
+      "new_limit_kw": null,
+      "correlation_key": "[\"127.0.0.1\",\"WT-02\"]",
+      "wazuh_rule_ids": []
+    }
+  ],
+  "recovery_checks": {
+    "before_kw": 2000,
+    "after_kw": 2000,
+    "http_statuses": [
+      403,
+      403,
+      403,
+      403,
+      403
+    ],
+    "telemetry": [
+      {
+        "turbine_id": "WT-01",
+        "wind_speed_ms": 13.7,
+        "rotor_rpm": 15.0,
+        "power_kw": 2000,
+        "gearbox_temp_c": 49.0,
+        "status": "Running"
+      },
+      {
+        "turbine_id": "WT-02",
+        "wind_speed_ms": 15.2,
+        "rotor_rpm": 15.0,
+        "power_kw": 2000,
+        "gearbox_temp_c": 49.0,
+        "status": "Running"
+      },
+      {
+        "turbine_id": "WT-03",
+        "wind_speed_ms": 14.8,
+        "rotor_rpm": 15.0,
+        "power_kw": 2000,
+        "gearbox_temp_c": 49.0,
+        "status": "Running"
+      }
+    ],
+    "events_sha256": "d56efd80c8e98749037349028c0deb1f40b24a7b34e6b915e352ce90ffd5f2ad",
+    "wazuh_validation": "pending: Docker engine unavailable"
+  }
+}
