@@ -1,5 +1,7 @@
 import json
 import logging
+import os
+import ipaddress
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
@@ -7,8 +9,7 @@ from uuid import uuid4
 
 
 LOG_FILE = (
-    Path(__file__).resolve().parents[1]
-    / "logs"
+    Path(os.environ.get("OT_LOG_DIR") or Path(__file__).resolve().parents[1] / "logs")
     / "ot_events.jsonl"
 )
 
@@ -64,6 +65,14 @@ def log_security_event(
         "old_limit_kw": old_limit_kw,
         "new_limit_kw": new_limit_kw,
     }
+
+    # Derive identity from the socket peer, never an HTTP forwarding header.
+    # JSON array encoding keeps the two fields unambiguous.
+    if turbine_id in ("WT-01", "WT-02", "WT-03"):
+        event["correlation_key"] = json.dumps(
+            [str(ipaddress.ip_address(source_ip)), turbine_id],
+            separators=(",", ":"),
+        )
 
     with _write_lock:
         with LOG_FILE.open(
