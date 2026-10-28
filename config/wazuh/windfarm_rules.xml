@@ -1,0 +1,34 @@
+<group name="windfarm,ot_security,">
+
+  <rule id="100201" level="3">
+    <if_sid>86600</if_sid>
+    <field name="event_type" type="pcre2">^OT_COMMAND$</field>
+    <field name="reason_code" type="pcre2">^COMMAND_APPLIED$</field>
+    <description>Wind farm: Authorised turbine control command applied</description>
+    <group>ot_control,configuration_change,</group>
+  </rule>
+
+  <rule id="100202" level="8">
+    <if_sid>86600</if_sid>
+    <field name="event_type" type="pcre2">^OT_COMMAND$</field>
+    <field name="reason_code" type="pcre2">^AUTH_FAILED$</field>
+    <description>Wind farm: Unauthorised turbine control attempt</description>
+    <group>ot_security,authentication_failed,</group>
+  </rule>
+
+  <rule id="100203" level="6">
+    <if_sid>86600</if_sid>
+    <field name="event_type" type="pcre2">^OT_COMMAND$</field>
+    <field name="reason_code" type="pcre2">^INVALID_SETPOINT$</field>
+    <description>Wind farm: Invalid turbine power-limit request</description>
+    <group>ot_security,invalid_control_command,</group>
+  </rule>
+
+  <rule id="100204" level="12" frequency="5" timeframe="60">
+    <if_matched_sid>100202</if_matched_sid>
+    <same_field>correlation_key</same_field>
+    <description>Wind farm: Repeated authentication failures from the same source against the same turbine</description>
+    <group>ot_security,repeated_auth_failure,</group>
+  </rule>
+
+</group>
