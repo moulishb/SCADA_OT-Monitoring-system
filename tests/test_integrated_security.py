@@ -1,4 +1,6 @@
 import json
+import os
+import runpy
 import time
 from pathlib import Path
 from urllib.request import Request, urlopen
@@ -7,7 +9,7 @@ from pymodbus.client import ModbusTcpClient
 
 
 GATEWAY_URL = "http://127.0.0.1:8081/command"
-OPERATOR_TOKEN = "wind-lab-operator-2026"
+OPERATOR_TOKEN = os.environ["OT_OPERATOR_TOKEN"]
 LOG_FILE = (
     Path(__file__).resolve().parents[1]
     / "logs"
@@ -141,6 +143,7 @@ def main():
         )
 
         # Wait for the simulator to refresh telemetry.
+        runpy.run_path(str(Path(__file__).with_name("test_security_logs.py")))
         time.sleep(4)
 
         power = read_modbus(client, "input", 2)
