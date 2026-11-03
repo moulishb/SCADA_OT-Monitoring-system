@@ -1,46 +1,101 @@
-# Unauthorised turbine control attempts
+# WF-001 — OT Security Incident Response Playbook
 
-Scope: localhost Python simulation. The response owner is the lab operator.
-No procedure here isolates hardware or controls production equipment.
+**Project:** Wind Farm OT/SCADA Security Monitoring & Incident Response  
+**Incident:** WF-001  
+**Environment:** Simulated three-turbine wind farm  
+**Incident date:** 3 November 2026  
+**Initial priority:** High — repeated authentication failures  
+**Operational impact:** No confirmed impact from observed commands
 
-1. **Identify.** Start with rule 100202 or 100204 and retain the alert's full JSON.
-   Match `data.event_id` to the gateway log. Record UTC timestamps, turbine,
-   socket source IP, requested setpoint and result. A failed token has no verified
-   actor; a source IP alone does not identify a person.
-2. **Triage.** Count failures per source and turbine within 60 seconds. Check for
-   COMMAND_APPLIED events before and after the burst. Escalate to the operator
-   immediately if an unexpected accepted change, lost telemetry or changed
-   register is observed. Treat repeated blocked requests as suspicious activity,
-   not proof of compromise.
-3. **Preserve evidence before changing configuration.** Copy the relevant JSONL
-   interval, Wazuh archives and alerts, active rules and manager errors into a
-   dated local evidence directory. Record SHA-256 hashes, capture time and commands.
-   Keep originals. Do not truncate logs, delete indices or recreate containers.
-   Review exports for credentials and personal information before committing them.
-4. **Contain with operator approval.** Options are rotating the lab token and
-   restarting the gateway during a planned interruption, or restricting access
-   to the gateway. Keep telemetry available where possible. Record the approval,
-   action, time and rollback. Do not automatically stop turbines or disable safety
-   behaviour. This project implements no automatic containment.
-5. **Recover.** Read holding register 0 on devices 1-3 and compare with the last
-   operator-approved baseline; do not assume 2000 kW is always intended. Read all
-   five telemetry registers and check SCADA output. Verify a failed token remains
-   rejected. Test an authorised change only in the lab with an agreed setpoint,
-   then restore and verify the baseline. Confirm log ingestion and Wazuh alerts
-   separately; readable telemetry does not prove SIEM recovery.
-6. **Close.** The operator confirms expected setpoints, working telemetry,
-   functioning detection, preserved evidence and no unexplained accepted changes.
-   Record unresolved questions, detection gaps and follow-up actions. Keep an
-   incident open if required Wazuh validation is unavailable.
+## 1. Purpose
 
-## Exercise record, 28 October 2026
+Define a repeatable procedure for handling suspicious or unauthorised industrial control requests in the simulated wind farm environment.
 
-`tests/run_cp3_lab.py` started an isolated localhost simulator, ran CP2 regressions
-and sent five invalid-token commands against WT-02. All five returned 403; the
-holding register was 2000 kW before and after; all three telemetry reads succeeded.
-No containment action was applied. The runner stopped only the simulator process
-it started. Report and raw evidence are under
-`logs/cp3-exercise/20261028T125358Z/`. See `incident-investigation.md` for reproduction.
+The response must prioritise safe turbine operation, evidence preservation and controlled recovery.
 
-This validates rejection, local evidence preservation and recovery reads. Wazuh
-alert handling, containment execution and full incident closure remain pending.
+## 2. Detection and Identification
+
+The command gateway recorded six rejected requests targeting WT-02, each attempting to set the power limit to 1,500 kW.
+
+All six events had the reason code `AUTH_FAILED`.
+
+Wazuh detected the individual events using rule 100202 and generated a correlated level 12 alert using rule 100204.
+
+## 3. Triage
+
+The analyst should:
+
+- Verify the alert and associated event IDs.
+- Identify the target turbine and requested command.
+- Examine source IP, timestamp and request outcome.
+- Determine whether any relevant command succeeded.
+- Review turbine configuration and operational status.
+- Escalate if successful unauthorised control, suspicious configuration changes or operational abnormalities are observed.
+
+**WF-001 finding:** Six rejected requests, zero accepted requests within the investigated window.
+
+## 4. Evidence Preservation
+
+Preserve:
+
+- Original JSONL security audit records.
+- Incident-specific event timeline.
+- Wazuh alert records.
+- Relevant rule configuration.
+- Turbine setpoint verification.
+- Investigation notes and evidence hashes.
+
+Record the collection time, file source and any transformations applied to evidence.
+
+## 5. Containment Decision
+
+Because the observed requests were rejected, the initial response is to maintain monitoring and investigate the source.
+
+Recommended actions:
+
+- Review the origin of the requests.
+- Review operator token handling and access policies.
+- Increase scrutiny of WT-02 control events.
+- Consider credential rotation if compromise becomes credible.
+
+Restricting gateway access or changing credentials requires approval because legitimate control operations could be affected.
+
+**Decision:** No automatic turbine shutdown or operational isolation.
+
+## 6. Recovery Verification
+
+Before closing the response exercise:
+
+1. Verify Modbus/TCP connectivity.
+2. Verify telemetry from WT-01, WT-02 and WT-03.
+3. Confirm turbine power limits match the expected authorised configuration.
+4. Confirm relevant security events are still collected by Wazuh.
+5. Confirm the detection rules remain operational.
+6. Record whether any services required restoration.
+
+## 7. Closure Criteria
+
+The exercise can be closed when:
+
+- Relevant evidence has been preserved.
+- The incident timeline is complete.
+- No successful unauthorised command was identified in the investigated window.
+- Current turbine configuration is verified.
+- Monitoring remains operational.
+- Outstanding risks and limitations are documented.
+
+## 8. Lessons Learned
+
+The monitoring system successfully identified and correlated repeated unauthorised control attempts.
+
+Application-level authorisation prevented the observed requests from reaching turbine control logic.
+
+The incident demonstrates the importance of contextual investigation: repeated authentication failures require review, but they do not automatically prove compromise or justify disruptive containment.
+
+## 9. Limitations
+
+This exercise uses simulated turbines, localhost command requests and software-based Modbus communication.
+
+The local source IP does not identify a real external attacker.
+
+The available investigation records support conclusions about observed gateway requests, not every possible industrial protocol action or historical equipment state.
